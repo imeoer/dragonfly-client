@@ -431,7 +431,7 @@ impl Proxy {
         // Select seed peers for downloading.
         let seed_peers = self
             .seed_peer_selector
-            .select(task_id, self.max_retries as u32)
+            .select(task_id.clone(), self.max_retries as u32)
             .await
             .map_err(|err| {
                 Error::Internal(format!(
@@ -440,6 +440,11 @@ impl Proxy {
                 ))
             })?;
         debug!("selected seed peers: {:?}", seed_peers);
+
+        println!(
+            "--------------------------------- task {} selected seed peers: {:?}",
+            task_id, seed_peers
+        );
 
         let mut client_entries = Vec::with_capacity(seed_peers.len());
         for peer in seed_peers.iter() {
